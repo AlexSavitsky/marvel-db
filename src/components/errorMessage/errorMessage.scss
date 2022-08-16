@@ -1,0 +1,12 @@
+.errorMessage {
+  background-image: url(./error.gif);
+  display: flex;
+  justify-content: center;
+  align-items:flex-end;
+  
+
+  h3 {
+    color: #ffff;
+    margin-bottom: 5px;
+  }
+}
