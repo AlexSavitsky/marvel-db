@@ -9,7 +9,8 @@
         align-items: start;
     }
     &__grid {
-        display: grid;
+        display: flex;
+        flex-wrap: wrap;
         grid-template-columns: repeat(3, 200px);
         column-gap: 25px;
         row-gap: 30px;
