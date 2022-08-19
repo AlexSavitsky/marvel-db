@@ -28,11 +28,14 @@ class CharList extends Component {
   }
 
   showNewCharactersByScrollEnd = () => {
-    const {loading, error, newItemLoading, offset} = this.state;
+    const { loading, error, newItemLoading, offset } = this.state;
 
     if (
       window.pageYOffset + document.documentElement.clientHeight >=
-      document.documentElement.scrollHeight && !loading && !newItemLoading && !error 
+        document.documentElement.scrollHeight &&
+      !loading &&
+      !newItemLoading &&
+      !error
     ) {
       this.onRequest(offset);
     }
@@ -69,8 +72,22 @@ class CharList extends Component {
     }));
   };
 
+  itemRefs = [];
+
+  setRef = (ref) => {
+    this.itemRefs.push(ref);
+  };
+
+  focusOnItem = (id) => {
+    this.itemRefs.forEach((item) =>
+      item.classList.remove("char__item_selected")
+    );
+    this.itemRefs[id].classList.add("char__item_selected");
+    this.itemRefs[id].focus();
+  };
+
   renderItems(arr) {
-    const items = arr.map((item) => {
+    const items = arr.map((item, i) => {
       let imgStyle =
         item.thumbnail.indexOf("not_available") > -1 ||
         item.thumbnail.indexOf("4c002e0305708.gif") > -1
@@ -81,7 +98,17 @@ class CharList extends Component {
         <li
           className="char__item"
           key={item.id}
-          onClick={() => this.props.onCharSelected(item.id)}
+          ref={this.setRef}
+          onClick={() => {
+            this.props.onCharSelected(item.id);
+            this.focusOnItem(i);
+          }}
+          onKeyPress={(e) => {
+            if(e.key === '' || e.key === 'Enter'){
+              this.props.onCharSelected(item.id);
+              this.focusOnItem(i);
+            }
+          }}
         >
           <img src={item.thumbnail} alt={item.name} style={imgStyle} />
           <div className="char__name">{item.name}</div>
