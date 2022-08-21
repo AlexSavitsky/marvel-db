@@ -1,7 +1,7 @@
 {
   "name": "marvel",
   "version": "0.1.0",
-  "homepage": "https://savamarveltest.herokuapp.com/",
+  "homepage": "https://AlexSavitsky.github.io/marvel-db",
   "private": true,
   "engines": {
     "node": "18.x"
