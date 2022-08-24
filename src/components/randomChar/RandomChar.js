@@ -2,17 +2,15 @@ import { useState, useEffect } from "react";
 
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
-import MarvelService from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 
 import "./randomChar.scss";
 import mjolnir from "../../resources/img/mjolnir.png";
 
 const RandomChar = () => {
-  const marvelService = new MarvelService();
+  const { loading, error, getCharacter, clearError } = useMarvelService();
 
   const [char, setChar] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     updateChar();
@@ -20,25 +18,14 @@ const RandomChar = () => {
     // return () => clearInterval(timerId);
   }, []);
 
-  const onCharLoading = () => {
-    setLoading(true);
-    setError(false);
-  };
-
   const onCharLoaded = (char) => {
     setChar(char);
-    setLoading(false);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
   };
 
   const updateChar = () => {
+    clearError();
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-    onCharLoading();
-    marvelService.getCharacter(id).then(onCharLoaded).catch(onError);
+    getCharacter(id).then(onCharLoaded);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;
@@ -68,11 +55,14 @@ const RandomChar = () => {
 
 const View = ({ char }) => {
   const { name, description, thumbnail, homepage, wiki } = char;
+  let imgStyle = {};
 
-  const imgStyle =
-    thumbnail.indexOf("not_available") > -1
-      ? { objectFit: "contain" }
-      : { objectFit: "cover" };
+  if (thumbnail) {
+    imgStyle =
+      thumbnail.indexOf("not_available") > -1
+        ? { objectFit: "contain" }
+        : { objectFit: "cover" };
+  }
 
   return (
     <div className="randomchar__block">

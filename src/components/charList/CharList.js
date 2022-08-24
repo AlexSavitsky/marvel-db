@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef } from "react";
 
-import MarvelService from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 
@@ -9,16 +9,14 @@ import "./charList.scss";
 const CharList = (props) => {
 
   const [charList, setCharList]  = useState([]);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [newItemLoading, setNewItemLoading] = useState(false);
   const [offset, setOffset] = useState(220);
   const [charEnded, setCharEnded] = useState(false);
 
-  const marvelServise = new MarvelService();
+  const {loading, error, getAllCharacters} = useMarvelService();
 
   useEffect(() => {
-    onRequest();
+    onRequest(offset, true);
     // eslint-disable-next-line
   }, []);
 
@@ -40,21 +38,10 @@ const CharList = (props) => {
     }
   };
 
-  const onRequest = (offset) => {
-    onCharListLoading();
-    marvelServise
-      .getAllCharacters(offset)
+  const onRequest = (offset, initial) => {
+    initial ? setNewItemLoading(false) : setNewItemLoading(true)
+    getAllCharacters(offset)
       .then(onCharListLoaded)
-      .catch(onError);
-  };
-
-  const onCharListLoading = () => {
-    setNewItemLoading(true);
-  };
-
-  const onError = () => {
-    setError(true);
-    setLoading(false);
   };
 
   const onCharListLoaded = (newCharList) => {
@@ -64,7 +51,6 @@ const CharList = (props) => {
     }
 
     setCharList(charList => [...charList, ...newCharList]);
-    setLoading(false);
     setNewItemLoading(false);
     setOffset(offset => offset + 9);
     setCharEnded(ended);
@@ -120,15 +106,14 @@ const CharList = (props) => {
         {<ErrorMessage />}
       </li>
     ) : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? items : null;
+    const spinner = loading && !newItemLoading ? <Spinner /> : null;
 
     return (
       <div className="char__list">
         <ul className="char__grid">
           {errorMessage}
           {spinner}
-          {content}
+          {items}
         </ul>
         <button
           className="button button__main button__long"
