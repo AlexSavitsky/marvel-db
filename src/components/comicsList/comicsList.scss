@@ -1,15 +1,20 @@
+@import '../../style/variables.scss';
+
 .comics {
     &__list {
         margin-top: 45px;
     }
     &__grid {
-        display: grid;
+        display: flex;
+        flex-wrap: wrap;
         grid-template-columns: repeat(auto-fill, 225px);
         justify-content: space-between;
         row-gap: 55px;
     }
     &__item {
         transition: 0.3s transform;
+        width: 250px;
+        height: 390px;
         &-img {
             box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
             width: 225px;

@@ -1,9 +1,9 @@
 import "./errorMessage.scss"
 
-const ErrorMessage = () => {
+const ErrorMessage = ({err = 'Something went wrong but Groot soon will be repair all.'}) => {
   return (
     <div className="errorMessage">
-        <h3>Something went wrong but Groot soon will be repair all.</h3>
+        <h3>{err}</h3>
     </div>
   );
 };
