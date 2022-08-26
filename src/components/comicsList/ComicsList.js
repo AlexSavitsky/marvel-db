@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
+import {Link} from 'react-router-dom';
 
 import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
@@ -11,7 +12,7 @@ const ComicsList = () => {
   const [comicsList, setComicsList] = useState([]);
   const [newItemLoading, setNewItemLoading] = useState(false);
   const [comicsEnded, setComicsEnded] = useState(false);
-  const [offset, setOffset] = useState(1);
+  const [offset, setOffset] = useState(200);
 
   useEffect(() => {
     onRequest(offset, true);
@@ -57,24 +58,17 @@ const ComicsList = () => {
 
   function renderItems(arr) {
     const items = arr.map((item, i) => {
-      let imgStyle =
-        item.thumbnail.indexOf("not_available") > -1 ||
-        item.thumbnail.indexOf("4c002e0305708.gif") > -1
-          ? { objectFit: "unset" }
-          : { objectFit: "cover" };
-
       return (
         <li className="comics__item" key={i}>
-          <a href="#">
+          <Link to={`/marvel-db/comics/${item.id}`}>
             <img
               src={item.thumbnail}
               alt={item.name}
               className="comics__item-img"
-              style={imgStyle}
             />
             <div className="comics__item-name">{item.name}</div>
             <div className="comics__item-price">{item.price}</div>
-          </a>
+          </Link>
         </li>
       );
     });

@@ -64,15 +64,13 @@ const useMarvelService = () => {
   }
 
   const _transformComics = (comic) => {
-      let checkedPrice =  comic.prices[0].price;
-      if(checkedPrice <=0){
-        checkedPrice = 'Not available';
-      }
-
       return {
         id: comic.id,
         name: comic.title,
-        price: comic.prices[0].price,
+        description: comic.description || 'There is no description.',
+        pageCount: comic.pageCount ? `${comic.pageCount} pages` : 'No information about the number of pages.',
+        language: comic.textObjects.language || 'en-us',
+        price: comic.prices[0].price ? `$${comic.prices[0].price}` : 'Not available',
         thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension
       }
   }
