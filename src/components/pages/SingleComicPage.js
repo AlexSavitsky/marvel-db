@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import {Page404} from "./"
 import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
 
 import "./singleComicPage.scss";
 
