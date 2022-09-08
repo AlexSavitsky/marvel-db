@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import useMarvelService from "../../services/MarvelService";
@@ -9,7 +10,7 @@ import Skeleton from "../skeleton/Skeleton";
 import "./charInfo.scss";
 
 const CharInfo = (props) => {
-  const {loading, error, getCharacter, clearError} = useMarvelService();
+  const { loading, error, getCharacter, clearError } = useMarvelService();
 
   const [char, setChar] = useState(null);
 
@@ -32,7 +33,6 @@ const CharInfo = (props) => {
     setChar(char);
     window.scrollTo({ top: 400, behavior: "smooth" });
   };
-
 
   const skeleton = char || loading || error ? null : <Skeleton />;
   const errorMessage = error ? <ErrorMessage /> : null;
@@ -79,12 +79,16 @@ const View = ({ char }) => {
       <ul className="char__comics-list">
         {comics.length > 0 ? null : "There is not comics with this character"}
         {comics.map((item, i) => {
+          const comicId = item.resourceURI.split("comics/")[1];
+          console.log(comicId);
           // eslint-disable-next-line
           if (i > 9) return;
           return (
-            <li key={i} className="char__comics-item">
-              {item.name}
-            </li>
+            <Link to={`/marvel-db/comics/${comicId}`} className="char__comics-item">
+              <li key={i} >
+                {item.name}
+              </li>
+            </Link>
           );
         })}
       </ul>
