@@ -19,7 +19,6 @@ const CharSearchForm = () => {
 
   const onCharLoaded = (char) => {
     setChar(char);
-    console.log(char);
   };
 
   const updateChar = (name) => {
@@ -36,7 +35,7 @@ const CharSearchForm = () => {
         There is! Visit {char[0].name} page?
       </div>
       <Link
-        to={`/characters/${char[0].id}`}
+        to={`/marvel-db/characters/${char[0].id}`}
         className="button button__secondary"
       >
         <div className="inner">To page</div>
