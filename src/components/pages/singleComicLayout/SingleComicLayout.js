@@ -1,11 +1,13 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
 import "./singleComicLayout.scss";
 
 const SingleComicLayout = ({ data }) => {
   const { name, description, pageCount, thumbnail, language, price } = data;
+  const navigate = useNavigate();
 
+  console.log(navigate("../success", { replace: true }));
   return (
     <div className="single-comic">
       <Helmet>
@@ -20,9 +22,9 @@ const SingleComicLayout = ({ data }) => {
         <p className="single-comic__descr">{language}</p>
         <div className="single-comic__price">{price}</div>
       </div>
-      <Link to="/marvel-db/comics" className="single-comic__back">
-        Back to all
-      </Link>
+      <a onClick={() => navigate(-1)} className="single-comic__back">
+        Back
+      </a>
     </div>
   );
 };

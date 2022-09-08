@@ -80,7 +80,7 @@ const View = ({ char }) => {
         {comics.length > 0 ? null : "There is not comics with this character"}
         {comics.map((item, i) => {
           const comicId = item.resourceURI.split("comics/")[1];
-          console.log(comicId);
+      
           // eslint-disable-next-line
           if (i > 9) return;
           return (
