@@ -1,8 +1,10 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 import "./appHeader.scss";
 
 const AppHeader = () => {
+  const location = useLocation();
+
   return (
     <header className="app__header">
       <h1 className="app__title">
@@ -15,10 +17,14 @@ const AppHeader = () => {
           <li>
             <NavLink
               end
+              location={{ search: "/characters" }}
               style={({ isActive }) => ({
-                color: isActive ? "#9F0013" : "inherit",
+                color:
+                  isActive || location.pathname.includes("characters")
+                    ? "#9F0013"
+                    : "inherit",
               })}
-              to="marvel-db"
+              to={"marvel-db/"}
             >
               Characters
             </NavLink>
