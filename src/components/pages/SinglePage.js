@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import { Page404 } from ".";
@@ -26,6 +26,8 @@ const SinglePage = ({ Component, dataType }) => {
       case "character":
         getCharacter(id).then(onDataLoaded);
         break;
+      default:
+        throw new Error("Unexpected process state");
     }
   };
 
@@ -35,10 +37,12 @@ const SinglePage = ({ Component, dataType }) => {
 
   const errorMessage = error ? <Page404 /> : null;
   const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error || !data) ? <Component data={data} /> : null;
+  const content = !(loading || error || !data) ? (
+    <Component data={data} />
+  ) : null;
   return (
     <>
-      <AppBanner/>
+      <AppBanner />
       {errorMessage}
       {spinner}
       {content}

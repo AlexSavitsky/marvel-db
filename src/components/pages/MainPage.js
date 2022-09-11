@@ -7,6 +7,7 @@ import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import decoration from "../../resources/img/vision.png";
 import CharSearchForm from "../charSearchForm/CharSearchForm";
+import ScrollBtnGroup from '../scrollBtnGroup/ScrollBtnGroup';
 
 const MainPage = () => {
   const [selectedChar, setSelectedChar] = useState(null);
@@ -14,7 +15,6 @@ const MainPage = () => {
   const onCharSelected = (id) => {
     setSelectedChar(id);
   };
-
   return (
     <>
       <Helmet>
@@ -34,6 +34,7 @@ const MainPage = () => {
           <ErrorBoundary>
             <CharInfo charId={selectedChar} />
             <CharSearchForm />
+            <ScrollBtnGroup/>
           </ErrorBoundary>
         </div>
       </div>

@@ -2,13 +2,12 @@ import { useState, useEffect} from "react";
 import {Link} from 'react-router-dom';
 
 import useMarvelService from "../../services/MarvelService";
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
+import setContentToList from "../../utils/setContentToList";
 
 import "./comicsList.scss";
 
 const ComicsList = () => {
-  const { loading, error, getAllComics } = useMarvelService();
+  const { process, setProcess, getAllComics } = useMarvelService();
   const [comicsList, setComicsList] = useState([]);
   const [newItemLoading, setNewItemLoading] = useState(false);
   const [comicsEnded, setComicsEnded] = useState(false);
@@ -30,10 +29,7 @@ const ComicsList = () => {
   const showNewComicsByScrollEnd = () => {
     if (
       window.pageYOffset + document.documentElement.clientHeight >=
-        document.documentElement.scrollHeight &&
-      !loading &&
-      !error &&
-      !newItemLoading
+        document.documentElement.scrollHeight && process === 'confirmed'
     ) {
       onRequest(offset);
     }
@@ -41,7 +37,7 @@ const ComicsList = () => {
 
   const onRequest = (offset, initial) => {
     initial ? setNewItemLoading(false) : setNewItemLoading(true);
-    getAllComics(offset).then(onComicsListLoaded);
+    getAllComics(offset).then(onComicsListLoaded).then(() => setProcess('confirmed'));
   };
 
   const onComicsListLoaded = (newComicsList) => {
@@ -76,21 +72,10 @@ const ComicsList = () => {
     return <ul className="comics__grid">{items}</ul>;
   }
 
-  const items = renderItems(comicsList);
-
-  const errorMessage = error ? (
-    <li className="comics__item" style={{ width: 100 + "%" }}>
-      {<ErrorMessage />}
-    </li>
-  ) : null;
-  const spinner = loading && !newItemLoading ? <Spinner /> : null;
-
   return (
     <div className="comics__list">
       <ul className="comics__grid">
-        {spinner}
-        {errorMessage}
-        {items}
+        {setContentToList(process, () => renderItems(comicsList), newItemLoading)}
       </ul>
       <button
         className="button button__main button__long"

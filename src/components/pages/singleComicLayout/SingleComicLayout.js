@@ -7,7 +7,6 @@ const SingleComicLayout = ({ data }) => {
   const { name, description, pageCount, thumbnail, language, price } = data;
   const navigate = useNavigate();
 
-  console.log(navigate("../success", { replace: true }));
   return (
     <div className="single-comic">
       <Helmet>
