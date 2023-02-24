@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 
 import useMarvelService from "../../services/MarvelService";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import Spinner from "../spinner/Spinner";
+import setContentToList from "../../utils/setContentToList";
+import useScroll from "../../hooks/useScroll";
 
 import "./charList.scss";
 
@@ -11,8 +11,10 @@ const CharList = (props) => {
   const [newItemLoading, setNewItemLoading] = useState(false);
   const [offset, setOffset] = useState(220);
   const [charEnded, setCharEnded] = useState(false);
+  const [focus, setFocus] = useState(null);
 
-  const { loading, error, getAllCharacters } = useMarvelService();
+  const { getAllCharacters, process, setProcess } = useMarvelService();
+  const { scrollToItem } = useScroll();
 
   useEffect(() => {
     onRequest(offset, true);
@@ -31,9 +33,7 @@ const CharList = (props) => {
     if (
       window.pageYOffset + document.documentElement.clientHeight >=
         document.documentElement.scrollHeight &&
-      !loading &&
-      !error &&
-      !newItemLoading
+      process === "confirmed"
     ) {
       onRequest(offset);
     }
@@ -41,8 +41,9 @@ const CharList = (props) => {
 
   const onRequest = (offset, initial) => {
     initial ? setNewItemLoading(false) : setNewItemLoading(true);
-
-    getAllCharacters(offset).then(onCharListLoaded);
+    getAllCharacters(offset)
+      .then(onCharListLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   const onCharListLoaded = (newCharList) => {
@@ -51,18 +52,18 @@ const CharList = (props) => {
       ended = true;
     }
 
-    setCharList(charList => [...charList, ...newCharList]);
-    setNewItemLoading(newItemLoading => false);
-    setOffset(offset => offset + 9);
-    setCharEnded(charEnded => ended);
+    setCharList((charList) => [...charList, ...newCharList]);
+    setNewItemLoading((newItemLoading) => false);
+    setOffset((offset) => offset + 9);
+    setCharEnded((charEnded) => ended);
   };
 
   const itemRefs = useRef([]);
 
   const focusOnItem = (id) => {
-    itemRefs.current.forEach((item) =>
-      item.classList.remove("char__item_selected")
-    );
+    itemRefs.current.forEach((item) => {
+      item.classList.remove("char__item_selected");
+    });
     itemRefs.current[id].classList.add("char__item_selected");
     itemRefs.current[id].focus();
   };
@@ -83,6 +84,7 @@ const CharList = (props) => {
           ref={(el) => (itemRefs.current[i] = el)}
           onClick={() => {
             props.onCharSelected(item.id);
+            scrollToItem();
             focusOnItem(i);
           }}
           onKeyPress={(e) => {
@@ -101,22 +103,17 @@ const CharList = (props) => {
     return <ul className="char__grid">{items}</ul>;
   }
 
-  const items = renderItems(charList);
-
-  const errorMessage = error ? (
-    <li className="char__item" style={{ width: 100 + "%" }}>
-      {<ErrorMessage />}
-    </li>
-  ) : null;
-  const spinner = loading && !newItemLoading ? <Spinner /> : null;
+  const elements = useMemo(() => {
+    return setContentToList(
+      process,
+      () => renderItems(charList),
+      newItemLoading
+    );
+  }, [process]);
 
   return (
     <div className="char__list">
-      <ul className="char__grid">
-        {errorMessage}
-        {spinner}
-        {items}
-      </ul>
+      <ul className="char__grid">{elements}</ul>
       <button
         className="button button__main button__long"
         disabled={newItemLoading}

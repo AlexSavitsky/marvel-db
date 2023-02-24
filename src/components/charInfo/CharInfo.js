@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import useMarvelService from "../../services/MarvelService";
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import Skeleton from "../skeleton/Skeleton";
+import setContent from "../../utils/setContent";
 
 import "./charInfo.scss";
 
 const CharInfo = (props) => {
-  const {loading, error, getCharacter, clearError} = useMarvelService();
+  const { process, setProcess, getCharacter, clearError } = useMarvelService();
+  
 
   const [char, setChar] = useState(null);
 
@@ -25,33 +25,24 @@ const CharInfo = (props) => {
     }
 
     clearError();
-    getCharacter(charId).then(onCharLoaded);
+    getCharacter(charId)
+      .then(onCharLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   const onCharLoaded = (char) => {
     setChar(char);
-    window.scrollTo({ top: 400, behavior: "smooth" });
   };
 
-
-  const skeleton = char || loading || error ? null : <Skeleton />;
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error || !char) ? <View char={char} /> : null;
-  const errorStyle = error ? { padding: 5 + "px", height: 200 + "px" } : null;
-
   return (
-    <div className="char__info" style={errorStyle}>
-      {skeleton}
-      {errorMessage}
-      {spinner}
-      {content}
+    <div className="char__info">
+      {setContent(process, View, char, { padding: "5px", height: "200px" })}
     </div>
   );
 };
 
-const View = ({ char }) => {
-  const { name, description, thumbnail, homepage, wiki, comics } = char;
+const View = ({ data }) => {
+  const { name, description, thumbnail, homepage, wiki, comics } = data;
 
   const imgStyle =
     thumbnail.indexOf("not_available") > -1
@@ -79,12 +70,17 @@ const View = ({ char }) => {
       <ul className="char__comics-list">
         {comics.length > 0 ? null : "There is not comics with this character"}
         {comics.map((item, i) => {
+          const comicId = item.resourceURI.split("comics/")[1];
+
           // eslint-disable-next-line
           if (i > 9) return;
           return (
-            <li key={i} className="char__comics-item">
-              {item.name}
-            </li>
+            <Link
+              to={`/marvel-db/comics/${comicId}`}
+              className="char__comics-item"
+            >
+              <li key={i}>{item.name}</li>
+            </Link>
           );
         })}
       </ul>

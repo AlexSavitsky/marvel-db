@@ -1,0 +1,60 @@
+@import "../../style/variables.scss";
+
+.container {
+    display: none;
+
+  &__hidden {
+    animation: 2s hide ease;
+    opacity: 0;
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+  }
+
+  &__show {
+    animation: 2s show ease;
+    display: block;
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+  }
+
+  &__scroll-button-group {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      width: 50px;
+      height: 50px;
+      background: none;
+      margin-top: 5px;
+      border: none;
+      cursor: pointer;
+    }
+
+    img {
+      object-fit: "cover";
+      width: 50px;
+      height: 50px;
+      border: 0;
+    }
+  }
+}
+
+@keyframes show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
